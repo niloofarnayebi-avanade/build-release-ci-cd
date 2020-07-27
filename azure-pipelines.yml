@@ -4,8 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
 trigger:
-- master
 - CI
+
+variables:
+- group: MLOps_Template_variables
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -32,3 +34,19 @@ steps:
 - script: |
     python create-and-run-ml-pipeline.py  --tenant_id $(tenant_id) --application_id $(application_id) --app_secret $(app_secret) --subscription_id $(subscription_id) --resource_group $(resource_group) --workspace_name $(workspace_name) --workspace_region $(workspace_region) --model_name $(model_name) --cluster_name_cpu $(cluster_name_cpu) --cluster_name_gpu $(cluster_name_gpu) --pipeline_experiment_name $(pipeline_experiment_name) --pipeline_name $(pipeline_name)
   displayName: 'Run, build and publish the ML Pipeline'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: $(Build.SourcesDirectory)
+    Contents: |
+      Score/**
+      TestDeployment/**
+      requirements_release.txt
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+- task: PublishPipelineArtifact@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'score-files'
+    publishLocation: 'pipeline'
+  displayName: 'Publish Artifact'
