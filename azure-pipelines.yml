@@ -39,14 +39,15 @@ steps:
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
     SourceFolder: $(Build.SourcesDirectory)
-    Contents: |
-      Score/**
-      TestDeployment/**
-      requirements_release.txt
+    Contents: '**' #|
+    #  Score/**
+    #  TestDeployment/**
+    #  requirements_release.txt
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-- task: PublishPipelineArtifact@1
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
   inputs:
-    pathToPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: 'score-files'
-    publishLocation: 'pipeline'
-  displayName: 'Publish Artifact' 
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'score-files'
+    publishLocation: 'Container'
