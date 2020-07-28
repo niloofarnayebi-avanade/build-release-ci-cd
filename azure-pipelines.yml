@@ -46,7 +46,7 @@ steps:
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 - task: PublishPipelineArtifact@1
   inputs:
-    #pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
     artifactName: 'score-files'
     publishLocation: 'pipeline'
-  displayName: 'Publish Artifact'
+  displayName: 'Publish Artifact' 
