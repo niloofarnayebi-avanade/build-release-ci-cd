@@ -103,9 +103,9 @@ except ComputeTargetException:
     print('Creating a new compute target...')
     # CPU: Standard_D3_v2
     # GPU: Standard_NV6
-    #compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D2_V2', 
-    #                                                       max_nodes=1,
-    #                                                       min_nodes=1)
+    compute_config = AmlCompute.provisioning_configuration(vm_size='STANDARD_D3_V2', 
+                                                           max_nodes=2,
+                                                           min_nodes=1)
 
     # create the cluster
     compute_target_cpu = ComputeTarget.create(ws, cluster_name_cpu, compute_config)
