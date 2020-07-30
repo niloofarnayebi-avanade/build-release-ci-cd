@@ -90,7 +90,7 @@ image = ContainerImage.create(name = image_name,
 
 image.wait_for_creation(show_output = True)
 
-## ---------------------------- If you have free Azure credit (Start) -------------------------------
+'''## ---------------------------- If you have free Azure credit (Start) -------------------------------
 ## This section, we deploy the image as a WebService on Azure Container Instance. This is light way to host the image 
 ## if you have free credit or you don't want to host your model on Kubernetes cluster
 aciconfig = AciWebservice.deploy_configuration(cpu_cores = 1, 
@@ -116,7 +116,7 @@ finally:
     print('This webservice is deployed')
 
 ## ---------------------------- If you have free Azure credit (End) -------------------------------
-
+'''
 ## ---------------------------- If you have Updated your Azure credit off of free tier (Start) -------------------------------
 ## This section, creates a Kubernetes cluster and deploys the image as a WebService on the Kubernetes cluster. 
 ## You should have a non-free subscription to execute this section.
