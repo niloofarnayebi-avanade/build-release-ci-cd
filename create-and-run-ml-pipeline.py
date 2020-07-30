@@ -109,7 +109,6 @@ except ComputeTargetException:
 
     # create the cluster
     compute_target_cpu = ComputeTarget.create(ws, cluster_name_cpu, compute_config)
-
     compute_target_cpu.wait_for_completion(show_output=True)
 
 # use get_status() to get a detailed status for the current cluster. 
@@ -182,7 +181,7 @@ trainingStep = EstimatorStep(name="Training-Step",
                                                                '--batch-size', 50,
                                                                '--first-layer-neurons', 300,
                                                                '--second-layer-neurons', 100,
-                                                               '--learning-rate', 0.01,
+                                                               '--learning-rate', 0.1,
                                                                "--release_id", 0,
                                                                '--model_name', model_name],
                              runconfig_pipeline_params=None,

@@ -121,7 +121,7 @@ finally:
 ## This section, creates a Kubernetes cluster and deploys the image as a WebService on the Kubernetes cluster. 
 ## You should have a non-free subscription to execute this section.
 
-'''from azureml.core.compute import ComputeTarget
+from azureml.core.compute import ComputeTarget
 from azureml.core.compute_target import ComputeTargetException
 
 try:
@@ -166,6 +166,6 @@ finally:
 
     aks_service.wait_for_deployment(show_output = True)
     print('This webservice is deployed')
-'''
+
 
 ## ---------------------------- If you have Updated your Azure credit off of free tier (End) -------------------------------
