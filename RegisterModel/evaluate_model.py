@@ -62,7 +62,7 @@ def evaluate_model():
         print("Current Production model accuracy: {}, New trained model accuracy: {}".format(production_model_acc, new_model_acc))
 
         promote_new_model = False
-        if new_model_acc < production_model_acc:
+        if new_model_acc > production_model_acc:
             promote_new_model = True
             print("New trained model performs better, thus it will be registered")
     except Exception:
