@@ -77,8 +77,8 @@ def register_model(promote_new_model, new_model_run, new_model_acc,):
     tags['run_id'] = new_model_run.id
     tags['final_accuracy'] = np.float(new_model_acc)
     # Un-comment this if you like to register the model with the highest accuracy.
-    # if promote_new_model:
-    if True:
+    if promote_new_model:
+    #if True:
         model_path = os.path.join('outputs/model', model_name)
         new_model_run.register_model(
             model_name=model_name,
