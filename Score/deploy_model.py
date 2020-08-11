@@ -66,14 +66,14 @@ model_root = Model(ws, name=model_name) # Model.get_model_path(model_name, _work
 
 from azureml.core.runconfig import CondaDependencies
 
-cd = CondaDependencies.create()
-cd.add_conda_package('numpy')
+# cd = CondaDependencies.create()
+# cd.add_conda_package('numpy')
 
-# Adds all you need for TF
-cd.add_tensorflow_conda_package() # core_type='cpu', version='1.13')
-cd.save_to_file(base_directory='./score', conda_file_path='myenv.yml')
+# # Adds all you need for TF
+# cd.add_tensorflow_conda_package() # core_type='cpu', version='1.13')
+# cd.save_to_file(base_directory='./score', conda_file_path='myenv.yml')
 
-print(cd.serialize_to_string())
+# print(cd.serialize_to_string())
 print(os.getcwd())
 os.chdir('./score')
 
@@ -98,13 +98,14 @@ from azureml.core.conda_dependencies import CondaDependencies
 
 conda = None
 myenv = Environment(name="myenv")
-myenv.python.conda_dependencies = CondaDependencies.create(conda_packages=None,pip_packages=[
-    'azureml-defaults',
-    'inference-schema',
-    'numpy',
-    "azureml-monitoring",
-    'tensorflow=1.13.1'
-])
+myenv.python.conda_dependencies = CondaDependencies.create(conda_packages=None,python_version='3.6.2', pip_packages=[
+     'azureml-defaults',
+     'inference-schema',
+     'numpy',
+     "azureml-monitoring",
+     'tensorflow==1.13.1'
+     ])
+
 
 
 '''## ---------------------------- If you have free Azure credit (Start) -------------------------------

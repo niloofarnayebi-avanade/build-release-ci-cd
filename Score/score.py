@@ -6,6 +6,7 @@ import time
 from azureml.core.model import Model
 
 def init():
+    import tensorflow as tf
     global X, output, sess
     print ("model initializing at " + time.strftime("%H:%M:%S"))
     model_name = "tf_mnist_pipeline_devops.model"
