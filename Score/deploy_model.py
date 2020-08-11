@@ -76,19 +76,36 @@ cd.save_to_file(base_directory='./score', conda_file_path='myenv.yml')
 print(cd.serialize_to_string())
 print(os.getcwd())
 os.chdir('./score')
-image_config = ContainerImage.image_configuration(execution_script = "score.py",
-                                                  runtime = "python",
-                                                  conda_file = "myenv.yml",
-                                                  description = "MNIST TF Model",
-                                                  tags = {'--release-id': "0", 'type': "TF deployment"})
 
-image = ContainerImage.create(name = image_name,
-                              # this is the model object
-                              models = [model_root],
-                              image_config = image_config,
-                              workspace = ws)
+### test this out ###
+# image_config = ContainerImage.image_configuration(execution_script = "score.py",
+#                                                   runtime = "python",
+#                                                   conda_file = "myenv.yml",
+#                                                   description = "MNIST TF Model",
+#                                                   tags = {'--release-id': "0", 'type': "TF deployment"})
 
-image.wait_for_creation(show_output = True)
+# image = ContainerImage.create(name = image_name,
+#                               # this is the model object
+#                               models = [model_root],
+#                               image_config = image_config,
+#                               workspace = ws)
+
+# image.wait_for_creation(show_output = True)
+
+from azureml.core.model import InferenceConfig
+from azureml.core.environment import Environment
+from azureml.core.conda_dependencies import CondaDependencies
+
+conda = None
+myenv = Environment(name="myenv")
+myenv.python.conda_dependencies = CondaDependencies.create(conda_packages=None,pip_packages=[
+    'azureml-defaults',
+    'inference-schema',
+    'numpy',
+    "azureml-monitoring",
+    'tensorflow=1.13.1'
+])
+
 
 '''## ---------------------------- If you have free Azure credit (Start) -------------------------------
 ## This section, we deploy the image as a WebService on Azure Container Instance. This is light way to host the image 
@@ -121,6 +138,11 @@ finally:
 ## This section, creates a Kubernetes cluster and deploys the image as a WebService on the Kubernetes cluster. 
 ## You should have a non-free subscription to execute this section.
 
+
+from azureml.core.model import InferenceConfig
+inf_config = InferenceConfig(entry_script='score.py', environment=myenv)
+
+
 from azureml.core.compute import ComputeTarget
 from azureml.core.compute_target import ComputeTargetException
 
@@ -143,11 +165,33 @@ except ComputeTargetException:
 print(aks_target.get_status())
 
 #Set the web service configuration (using default here)
-aks_config = AksWebservice.deploy_configuration(autoscale_enabled=True,
-                                                autoscale_min_replicas=1,
-                                                autoscale_max_replicas=2,
-                                                collect_model_data=True,
-                                                enable_app_insights=True)
+# aks_config = AksWebservice.deploy_configuration(autoscale_enabled=True,
+#                                                 autoscale_min_replicas=1,
+#                                                 autoscale_max_replicas=2,
+#                                                 collect_model_data=True,
+#                                                 enable_app_insights=True)
+
+from azureml.core.image import ContainerImage
+from azureml.core.webservice import AksWebservice, Webservice
+
+
+
+# If deploying to a cluster configured for dev/test, ensure that it was created with enough
+# cores and memory to handle this deployment configuration. Note that memory is also used by
+# things such as dependencies and AML components.
+
+aks_config = AksWebservice.deploy_configuration(autoscale_enabled=True, 
+                                                       autoscale_min_replicas=1, 
+                                                       autoscale_max_replicas=2, 
+                                                       autoscale_refresh_seconds=10, 
+                                                       autoscale_target_utilization=70,
+                                                       auth_enabled=True, 
+                                                       cpu_cores=2, memory_gb=1, 
+                                                       scoring_timeout_ms=5000, 
+                                                       replica_max_concurrent_requests=2, 
+                                                       max_request_wait_time=5000, 
+                                                       enable_app_insights=True,
+                                                       collect_model_data=True)
 
 try:
     aks_service = Webservice(name = aks_service_name, workspace = ws)
@@ -158,11 +202,19 @@ except Exception:
     print("This webservice doesn't exist")
 finally:
     print('Deploying the new web service')
-    aks_service = Webservice.deploy_from_image(workspace = ws, 
-                                           name = aks_service_name,
-                                           image = image,
-                                           deployment_config = aks_config,
-                                           deployment_target = aks_target)
+    # aks_service = Webservice.deploy_from_image(workspace = ws, 
+    #                                        name = aks_service_name,
+    #                                        image = image,
+    #                                        deployment_config = aks_config,
+    #                                        deployment_target = aks_target)
+    aks_service = Model.deploy(workspace=ws,
+                           name=aks_service_name,
+                           models = [model_root],
+                           inference_config=inf_config,
+                           deployment_config=aks_config,
+                           deployment_target=aks_target,
+                           overwrite=True)
+
 
     aks_service.wait_for_deployment(show_output = True)
     print('This webservice is deployed')
