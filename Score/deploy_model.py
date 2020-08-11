@@ -107,7 +107,6 @@ myenv.python.conda_dependencies = CondaDependencies.create(conda_packages=None,p
      ])
 
 
-
 '''## ---------------------------- If you have free Azure credit (Start) -------------------------------
 ## This section, we deploy the image as a WebService on Azure Container Instance. This is light way to host the image 
 ## if you have free credit or you don't want to host your model on Kubernetes cluster
