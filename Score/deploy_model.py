@@ -103,7 +103,7 @@ myenv.python.conda_dependencies = CondaDependencies.create(conda_packages=None,p
     'inference-schema',
     'numpy',
     "azureml-monitoring",
-    'tensorflow=1.13.1'
+    'tensorflow'
 ])
 
 
